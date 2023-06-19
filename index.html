@@ -34,80 +34,81 @@
   const commentUser = document.querySelector(".add-form-text");
 
   const userComments = document.querySelector('.comments');
-const userComment = [
-  {  name: 'Глеб Фокин',
-    date: '12.02.22 12:18',
-    comment: 'Это будет первый комментарий на этой странице',
-    likes: 3,
-    isLike: false,
-  },
-  {  name: 'Варвара Н.',
-    date: '13.02.22 19:22',
-    comment: 'Мне нравится как оформлена эта страница! ❤',
-    likes: 75,
-    isLike: true,
-  },
-];
+  const userComment = [
+    {
+      name: 'Глеб Фокин',
+      date: '12.02.22 12:18',
+      comment: 'Это будет первый комментарий на этой странице',
+      likes: 3,
+      isLike: false,
+    },
+    {
+      name: 'Варвара Н.',
+      date: '13.02.22 19:22',
+      comment: 'Мне нравится как оформлена эта страница! ❤',
+      likes: 75,
+      isLike: true,
+    },
+  ];
 
-const initLikesBtn = () => {
-  const likeBtns = document.querySelectorAll('.like-button');
-  for (const likeBtn of likeBtns) {
-    const index = likeBtn.dataset.index;
-    likeBtn.addEventListener('click', () => {
+  const initLikesBtn = () => {
+    const likeBtns = document.querySelectorAll('.like-button');
+    for (const likeBtn of likeBtns) {
+      const index = likeBtn.dataset.index;
+      likeBtn.addEventListener('click', () => {
 
-          if (userComment[index].isLike === true) {
+        if (userComment[index].isLike === true) {
           userComment[index].likes = userComment[index].likes += 1;
           userComment[index].isLike = false;
         }
-        
+
         else if (userComment[index].isLike === false) {
           userComment[index].likes = userComment[index].likes -= 1;
           userComment[index].isLike = true;
         }
-      renderUserComments();
-    });
+        renderUserComments();
+      });
+    }
   }
-}
 
-let date = new Date();
-let day = date.getDate();
-let month = date.getMonth() + 1;
-let year = date.getFullYear() - 2000;
-let hour = date.getHours();
-let minute = date.getMinutes();
-if (month < 10) {
-  month = "0" + month;
-}
-if (hour < 10) {
-  hour = "0" + hour;
-}
-if (minute < 10) {
-  minute = "0" + minute;
-}
-date = day + "." + month + "." + year + "  " + hour + ":" + minute;
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear() - 2000;
+  let hour = date.getHours();
+  let minute = date.getMinutes();
+  if (month < 10) {
+    month = "0" + month;
+  }
+  if (hour < 10) {
+    hour = "0" + hour;
+  }
+  if (minute < 10) {
+    minute = "0" + minute;
+  }
+  date = day + "." + month + "." + year + "  " + hour + ":" + minute;
 
-    function addComment() {
-  userComment.push({
-    name: nameUser.value,
-    date: date,
-    comment: commentUser.value,
-    likes: 0,
-    isLike: true,
-    isEdit: false,
+  function addComment() {
+    userComment.push({
+      name: nameUser.value,
+      date: date,
+      comment: commentUser.value,
+      likes: 0,
+      isLike: true,
+      isEdit: false,
+    });
+    nameUser.value = "";
+    commentUser.value = "";
+    renderUserComments();
+  }
+
+  btn.addEventListener("click", () => {
+    addComment();
   });
-  nameUser.value = "";
-  commentUser.value = "";
-  renderUserComments();
-}
 
-
-btn.addEventListener("click", () => {
-  addComment();
-});
-
-const renderUserComments = () => {
-  userComments.innerHTML = userComment.map((comments, index) => {
-    return `
+  const renderUserComments = () => {
+    userComments.innerHTML = userComment.map((comments, index) => {
+      return `
     <li class="comment">
     <div class="comment-header">
       <div>${comments.name}</div>
@@ -125,10 +126,10 @@ const renderUserComments = () => {
       </div>
     </div>
   </li>`
-  }).join('');
-  initLikesBtn();
-};
-renderUserComments();
+    }).join('');
+    initLikesBtn();
+  };
+  renderUserComments();
 
 </script>
 
