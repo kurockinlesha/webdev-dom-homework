@@ -52,24 +52,49 @@
   ];
 
   const initLikesBtn = () => {
+
     const likeBtns = document.querySelectorAll('.like-button');
+
     for (const likeBtn of likeBtns) {
       const index = likeBtn.dataset.index;
-      likeBtn.addEventListener('click', () => {
-
+      likeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (userComment[index].isLike === true) {
           userComment[index].likes = userComment[index].likes += 1;
           userComment[index].isLike = false;
         }
 
-        else if (userComment[index].isLike === false) {
+        else {
           userComment[index].likes = userComment[index].likes -= 1;
           userComment[index].isLike = true;
         }
         renderUserComments();
       });
     }
-  }
+  };
+
+  const findTextarea = () => {
+
+    const textareas = document.querySelectorAll('.add-form-text');
+
+    for (const textarea of textareas) {
+      textarea.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+  };
+
+  function commentComment() {
+
+    const comments = document.querySelectorAll(".comment");
+
+    for (const comment of comments) {
+      comment.addEventListener('click', () => {
+        const index = comment.dataset.index;
+        commentUser.value = '>' + userComment[index].comment + '\n' + '\n' + userComment[index].name + ' ,';
+      });
+    };
+  };
 
   let date = new Date();
   let day = date.getDate();
@@ -89,34 +114,44 @@
   date = day + "." + month + "." + year + "  " + hour + ":" + minute;
 
   function addComment() {
+
     userComment.push({
-      name: nameUser.value,
+      name: nameUser.value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"),
       date: date,
-      comment: commentUser.value,
+      comment: commentUser.value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"),
       likes: 0,
       isLike: true,
-      isEdit: false,
     });
+
+    initLikesBtn();
+
     nameUser.value = "";
     commentUser.value = "";
+
     renderUserComments();
-  }
+  };
 
   btn.addEventListener("click", () => {
     addComment();
   });
 
+  form.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      addComment();
+    }
+  });
+
   const renderUserComments = () => {
     userComments.innerHTML = userComment.map((comments, index) => {
       return `
-    <li class="comment">
+    <li class="comment" data-index=${index}>
     <div class="comment-header">
       <div>${comments.name}</div>
       <div>${comments.date}</div>
     </div>
     <div class="comment-body">
       <div class="comment-text">
-         ${comments.comment}
+        ${comments.comment}
       </div>
     </div>
     <div class="comment-footer">
@@ -127,8 +162,15 @@
     </div>
   </li>`
     }).join('');
+
     initLikesBtn();
+
+    commentComment();
+
+    findTextarea();
+
   };
+
   renderUserComments();
 
 </script>
