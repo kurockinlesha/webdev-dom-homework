@@ -34,22 +34,72 @@
   const commentUser = document.querySelector(".add-form-text");
 
   const userComments = document.querySelector('.comments');
-  const userComment = [
-    {
-      name: 'Глеб Фокин',
-      date: '12.02.22 12:18',
-      comment: 'Это будет первый комментарий на этой странице',
-      likes: 3,
-      isLike: false,
-    },
-    {
-      name: 'Варвара Н.',
-      date: '13.02.22 19:22',
-      comment: 'Мне нравится как оформлена эта страница! ❤',
-      likes: 75,
-      isLike: true,
-    },
-  ];
+  let userComment = [];
+
+  function apiGet() {
+    fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
+      method: "GET"
+    }).then((response) => {
+      response.json().then((responseData) => {
+        userComment = responseData.comments.map((comment) => {
+
+          let date = new Date();
+          let day = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear() - 2000;
+          let hour = date.getHours();
+          let minute = date.getMinutes();
+          if (month < 10) {
+            month = "0" + month;
+          }
+          if (hour < 10) {
+            hour = "0" + hour;
+          }
+          if (minute < 10) {
+            minute = "0" + minute;
+          }
+          date = day + "." + month + "." + year + "  " + hour + ":" + minute;
+
+          return {
+            id: comment.id,
+            name: comment.author.name,
+            date: date,
+            comment: comment.text,
+            likes: comment.likes,
+            isLike: true,
+          }
+
+        })
+        renderUserComments();
+      });
+    });
+  }
+  apiGet();
+
+  function addComment() {
+    fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        text: commentUser.value,
+        name: nameUser.value,
+      }),
+    }).then((response) => {
+      const jsonPromise = response.json();
+      jsonPromise.then((responseData) => {
+
+        renderUserComments();
+      });
+    });
+
+    initLikesBtn();
+
+    nameUser.value = "";
+    commentUser.value = "";
+
+    renderUserComments();
+
+    apiGet();
+  }
 
   const initLikesBtn = () => {
 
@@ -94,41 +144,6 @@
         commentUser.value = '>' + userComment[index].comment + '\n' + '\n' + userComment[index].name + ' ,';
       });
     };
-  };
-
-  let date = new Date();
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear() - 2000;
-  let hour = date.getHours();
-  let minute = date.getMinutes();
-  if (month < 10) {
-    month = "0" + month;
-  }
-  if (hour < 10) {
-    hour = "0" + hour;
-  }
-  if (minute < 10) {
-    minute = "0" + minute;
-  }
-  date = day + "." + month + "." + year + "  " + hour + ":" + minute;
-
-  function addComment() {
-
-    userComment.push({
-      name: nameUser.value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"),
-      date: date,
-      comment: commentUser.value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"),
-      likes: 0,
-      isLike: true,
-    });
-
-    initLikesBtn();
-
-    nameUser.value = "";
-    commentUser.value = "";
-
-    renderUserComments();
   };
 
   btn.addEventListener("click", () => {
