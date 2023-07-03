@@ -9,8 +9,14 @@
 
 <body>
   <div class="container">
+    <div id="preloader">
+      <p>Пожалуйста подождите, загружаю комментарии ...</p>
+    </div>
     <ul id="comments__list" class="comments">
     </ul>
+    <div id="preloadCom" class="preloader-hidden">
+      <p>Комментарий загружается ...</p>
+    </div>
     <div class="add-form">
       <input id="name__input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea id="comment__textarea" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
@@ -36,11 +42,14 @@
   const userComments = document.querySelector('.comments');
   let userComment = [];
 
-  function apiGet() {
-    fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
+  const apiGet = () => {
+    return fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
       method: "GET"
-    }).then((response) => {
-      response.json().then((responseData) => {
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((responseData) => {
         userComment = responseData.comments.map((comment) => {
 
           let date = new Date();
@@ -68,37 +77,48 @@
             likes: comment.likes,
             isLike: true,
           }
-
         })
+        
         renderUserComments();
-      });
-    });
-  }
-  apiGet();
 
-  function addComment() {
-    fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
+      });
+  }
+
+  apiGet().then(() => {
+    window.onload = function() {
+    let preloader = document.getElementById('preloader');
+    preloader.classList.add('preload');
+}
+    let preloader = document.getElementById('preloader');
+    preloader.classList.add('preloader-hidden');
+  })
+
+  const addComment = () => {
+    return fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
       method: "POST",
       body: JSON.stringify({
         text: commentUser.value,
         name: nameUser.value,
       }),
-    }).then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
-
-        renderUserComments();
-      });
-    });
-
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then(() => {
+        nameUser.value = "";
+        commentUser.value = "";
+      })
+      .then(() => {
+        return sendingCom();
+      })
+      .then(() => {
+        return apiGet();
+      })
+      
     initLikesBtn();
-
-    nameUser.value = "";
-    commentUser.value = "";
 
     renderUserComments();
 
-    apiGet();
   }
 
   const initLikesBtn = () => {
@@ -146,7 +166,9 @@
     };
   };
 
-  btn.addEventListener("click", () => {
+  const sendingCom = () => {
+    
+    btn.addEventListener("click", () => {
     addComment();
   });
 
@@ -155,6 +177,17 @@
       addComment();
     }
   });
+  
+}
+sendingCom();
+
+//sendingCom().then(() => {
+//  window.onload = function() {
+//let preloaderCom = document.getElementById('preloadCom');
+//    preloader.classList.add('preload');
+//  }
+//})
+
 
   const renderUserComments = () => {
     userComments.innerHTML = userComment.map((comments, index) => {
