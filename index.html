@@ -14,8 +14,7 @@
     </div>
     <ul id="comments__list" class="comments">
     </ul>
-    <div id="preloadCom" class="preloader-hidden">
-      <p>Комментарий загружается ...</p>
+    <div id="preloadCom">
     </div>
     <div class="add-form">
       <input id="name__input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
@@ -94,6 +93,9 @@
   })
 
   const addComment = () => {
+    const loader = document.getElementById('preloadCom');
+    loader.textContent = 'Комментарий загружается ...';
+    
     return fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
       method: "POST",
       body: JSON.stringify({
@@ -105,14 +107,21 @@
         return response.json();
       })
       .then(() => {
+        form.className = "preloader-hidden";
+        return sendingCom();
+      })
+      .then(() => {
         nameUser.value = "";
         commentUser.value = "";
       })
       .then(() => {
-        return sendingCom();
+        loader.className = "preloader-hidden";
       })
       .then(() => {
         return apiGet();
+      })
+      .then(() => {
+        form.className = "add-form";
       })
       
     initLikesBtn();
@@ -180,14 +189,6 @@
   
 }
 sendingCom();
-
-//sendingCom().then(() => {
-//  window.onload = function() {
-//let preloaderCom = document.getElementById('preloadCom');
-//    preloader.classList.add('preload');
-//  }
-//})
-
 
   const renderUserComments = () => {
     userComments.innerHTML = userComment.map((comments, index) => {

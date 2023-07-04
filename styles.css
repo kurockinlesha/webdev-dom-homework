@@ -6,10 +6,6 @@ body {
     display: none;
 }
 
-.preload {
-  display: block;
-}
-
   .container {
     font-family: Helvetica;
     color: #ffffff;
