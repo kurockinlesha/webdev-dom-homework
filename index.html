@@ -77,25 +77,26 @@
             isLike: true,
           }
         })
-        
+
         renderUserComments();
 
       });
   }
 
   apiGet().then(() => {
-    window.onload = function() {
-    let preloader = document.getElementById('preloader');
-    preloader.classList.add('preload');
-}
+    window.onload = function () {
+      let preloader = document.getElementById('preloader');
+      preloader.classList.add('preload');
+    }
     let preloader = document.getElementById('preloader');
     preloader.classList.add('preloader-hidden');
   })
 
   const addComment = () => {
     const loader = document.getElementById('preloadCom');
+    form.className = "preloader-hidden";
     loader.textContent = 'Комментарий загружается ...';
-    
+
     return fetch("https://wedev-api.sky.pro/api/v1/alexey-kurochkin/comments", {
       method: "POST",
       body: JSON.stringify({
@@ -105,10 +106,6 @@
     })
       .then((response) => {
         return response.json();
-      })
-      .then(() => {
-        form.className = "preloader-hidden";
-        return sendingCom();
       })
       .then(() => {
         nameUser.value = "";
@@ -123,7 +120,7 @@
       .then(() => {
         form.className = "add-form";
       })
-      
+
     initLikesBtn();
 
     renderUserComments();
@@ -176,19 +173,19 @@
   };
 
   const sendingCom = () => {
-    
-    btn.addEventListener("click", () => {
-    addComment();
-  });
 
-  form.addEventListener("keyup", (e) => {
-    if (e.key == "Enter") {
+    btn.addEventListener("click", () => {
       addComment();
-    }
-  });
-  
-}
-sendingCom();
+    });
+
+    form.addEventListener("keyup", (e) => {
+      if (e.key == "Enter") {
+        addComment();
+      }
+    });
+
+  }
+  sendingCom();
 
   const renderUserComments = () => {
     userComments.innerHTML = userComment.map((comments, index) => {
