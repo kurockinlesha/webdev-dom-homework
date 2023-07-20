@@ -11,7 +11,7 @@ let userName;
 
 const setUserName = (newName) => {
     userName = newName;
-  }
+}
 
 function getTodos() {
     return fetch(api, {
@@ -62,8 +62,7 @@ function postTodo() {
 }
 
 function postLogin({ login, password }) {
-    const nameUser = document.querySelector(".add-form-name");
-  const commentUser = document.querySelector(".add-form-text");
+
     return fetch(loginURL, {
         method: "POST",
         body: JSON.stringify({

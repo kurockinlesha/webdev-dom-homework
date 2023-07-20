@@ -31,8 +31,7 @@ function apiGetStartPage() {
 };
 apiGetStartPage();
 
-function apiGet({ responseData }) {
-  let newData = responseData;
+function apiGet() {
   isLoadingAllComments = true;
   render.renderUserComments({ userComment, isLoading, addComment });
   api.getTodos()
