@@ -1,7 +1,6 @@
-let isLoading;
-let isLoadingAllComments;
+import * as api from './api.js';
 
-const renderUserComments = ({ userComment, isLoading, addComment, responseData }) => {
+const renderUserComments = ({ userComment, isLoading, addComment }) => {
     const app = document.querySelector('.app');
     const commentsHtml = userComment.map((comments, index) => {
 
@@ -42,15 +41,13 @@ const renderUserComments = ({ userComment, isLoading, addComment, responseData }
     const form = document.querySelector(".add-form");
     const ul = document.querySelector(".comments");
 
-    nameUser.value = responseData.user.name;
-
     btn.addEventListener("click", () => {
-        addComment({ responseData });
+        addComment();
     });
 
     form.addEventListener("keyup", (e) => {
         if (e.key == "Enter") {
-            addComment({ responseData });
+            addComment();
         }
     });
 
@@ -82,8 +79,7 @@ const renderUserComments = ({ userComment, isLoading, addComment, responseData }
                     userComment[index].likes = userComment[index].likes -= 1;
                     userComment[index].isLike = true;
                 }
-                renderUserComments({ userComment, addComment, responseData });
-                nameUser.value = responseData.user.name;
+                renderUserComments({ userComment, addComment });
             });
         }
     }

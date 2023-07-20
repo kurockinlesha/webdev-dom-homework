@@ -1,8 +1,8 @@
 import * as api from './api.js';
 import * as render from './render.js';
 import * as time from './date.js';
-import * as login from './renderLogin.js';
 import * as startPage from './renderStart.js';
+import { format } from "date-fns";
 
 let isLoadingAllComments;
 let isLoading;
@@ -13,8 +13,8 @@ function apiGetStartPage() {
   api.getTodos()
     .then((responseData) => {
       userComment = responseData.comments.map((comment) => {
-        let date = new Date(comment.date);
-        date = time.formatCommentDate(date);
+        const createDate = format(new Date(), 'yyyy-MM-dd hh.mm.ss');
+        let date = createDate;
         return {
           id: comment.id,
           name: comment.author.name,
@@ -34,7 +34,7 @@ apiGetStartPage();
 function apiGet({ responseData }) {
   let newData = responseData;
   isLoadingAllComments = true;
-  render.renderUserComments({ userComment, isLoading, addComment, responseData });
+  render.renderUserComments({ userComment, isLoading, addComment });
   api.getTodos()
     .then((responseData) => {
       isLoading = false;
@@ -51,18 +51,18 @@ function apiGet({ responseData }) {
           isLike: true,
         };
       })
-      render.renderUserComments({ userComment, isLoading, addComment, responseData });
+      render.renderUserComments({ userComment, isLoading, addComment });
     }).catch((error) => {
       api.catchTodo(error);
     })
 };
 
-function addComment({ responseData }) {
+function addComment() {
   isLoading = true;
   api.postTodo()
     .then(() => {
-      render.renderUserComments({ userComment, isLoading, addComment, responseData });
-      return apiGet({ responseData });
+      render.renderUserComments({ userComment, isLoading, addComment });
+      return apiGet();
     })
     .catch((error) => {
       api.catchTodo(error);

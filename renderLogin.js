@@ -1,6 +1,5 @@
 import * as api from './api.js';
 import * as render from './render.js';
-import * as main from './main.js';
 
 const renderLogin = ({ userComment, isLoading, addComment }) => {
     const app = document.querySelector('.app');
@@ -27,9 +26,10 @@ const renderLogin = ({ userComment, isLoading, addComment }) => {
             password: passwordInputElement.value,
         }).then((responseData) => {
             api.setToken(responseData.user.token);
+            api.setUserName(responseData.user.name);
             return responseData;
         }).then((responseData) => {
-            render.renderUserComments({ userComment, isLoading, addComment, responseData });
+            render.renderUserComments({ userComment, isLoading, addComment });
         })
     })
 }
